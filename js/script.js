@@ -110,7 +110,7 @@ const loop = () => {
     // camera.position.set(cabGlobalParams.cabWidth / 2 + cursor.x, -cabGlobalParams.cabDepth - 1000, - cursor.y + cabGlobalParams.cabHeight / 2)
     camera.position.x = Math.sin(-cursor.x * 0.009) * 1000
     camera.position.z = cabGlobalParams.cabDepth / 2 + Math.cos(-cursor.x * 0.009) * 1000
-    camera.position.y = cabGlobalParams.cabHeight / 2 + Math.sin(cursor.y * 0.01) * 1000
+    camera.position.y = cabGlobalParams.cabHeight / 2 + cursor.y * 5
     camera.lookAt(mesh.position)
     console.log(camera.position)
     // mesh.rotateZ(degToRad(0.1))
