@@ -1,6 +1,7 @@
 import '/Работа/РАБОЧИЕ ПРОЕКТЫ/JavaScript/Projects/threejs_basics/style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+
 // Variables
 let cabGlobalParams = {
     cabHeight: 720,
@@ -29,13 +30,24 @@ window.addEventListener('mousemove', (event) => {
 const scene = new THREE.Scene()
 
 // Geometry
-const geometry = new THREE.BoxGeometry(cabGlobalParams.cabWidth, cabGlobalParams.cabHeight, cabGlobalParams.cabDepth)
-const material = new THREE.MeshBasicMaterial({ color: 0x4e4e56, wireframe: true })
-const mesh = new THREE.Mesh(geometry, material)
-mesh.position.set(cabGlobalParams.cabWidth / 2, cabGlobalParams.cabHeight / 2, cabGlobalParams.cabDepth / 2 + cabGlobalParams.cabWallOffset)
+const cabGeo = new THREE.BoxGeometry(cabGlobalParams.cabWidth, cabGlobalParams.cabHeight, cabGlobalParams.cabDepth)
+const edgeGeo = new THREE.EdgesGeometry(cabGeo)
+const cabMat = new THREE.MeshBasicMaterial({ color: 0x7fffd4, transparent: true, opacity: 0.3 })
+const cabBox = new THREE.Mesh(cabGeo, cabMat)
+const cabEdges = new THREE.LineSegments(
+    edgeGeo,
+    new THREE.LineBasicMaterial({
+        color: new THREE.Color(0x7fffd4),
+        linewidth: 3
+    })
+)
+const cabGroup = new THREE.Group()
+cabGroup.add(cabBox, cabEdges)
+//cabGroup.add(cabEdges)
+cabGroup.position.set(cabGlobalParams.cabWidth / 2, cabGlobalParams.cabHeight / 2, cabGlobalParams.cabDepth / 2 + cabGlobalParams.cabWallOffset)
 //mesh.rotation.y = degToRad(45)
 //mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), 360 / 10 * Math.PI)
-scene.add(mesh)
+scene.add(cabGroup)
 
 // Screen
 const screen = {
@@ -44,9 +56,22 @@ const screen = {
 }
 const aspectRatio = screen.width / screen.height
 
+window.addEventListener('resize', () => {
+    // Update Screen
+    screen.width = window.innerWidth
+    screen.height = window.innerHeight
+    // Update Camera
+    camera.aspect = screen.width / screen.height
+    //aspectRatio = camera.aspect
+    camera.updateProjectionMatrix()
+    //Update Renderer
+    renderer.setSize(screen.width, screen.height)
+    console.log(screen.width, screen.height, aspectRatio, camera.aspect)
+})
+
 // Camera
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 5000)
-// const camera = new THREE.OrthographicCamera(-1000 * aspectRatio, 1000 * aspectRatio, 1000, -1000)
+// const camera = new THREE.OrthographicCamera(-1000 * camera.aspect, 1000 * camera.aspect, 1000, -1000)
 // camera.position.set(0, 0, 0)
 camera.position.x = cabGlobalParams.cabWidth / 2
 camera.position.z = cabGlobalParams.cabDepth + 1000
@@ -58,7 +83,7 @@ const axesLength = 1000
 const pointsX = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(axesLength, 0, 0)]
 const pointsY = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, axesLength)]
 const pointsZ = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, axesLength, 0)]
-const lineMaterialX = new THREE.LineBasicMaterial({ color: 0xac1616 })
+const lineMaterialX = new THREE.LineBasicMaterial({ color: 0xac1616, linewidth: 20 })
 const lineMaterialY = new THREE.LineBasicMaterial({ color: 0x075300 }) // #4e4e56
 const lineMaterialZ = new THREE.LineBasicMaterial({ color: 0x1111a6 })
 const linePointsX = new THREE.BufferGeometry().setFromPoints(pointsX)

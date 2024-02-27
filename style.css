@@ -1,5 +1,17 @@
 * {
     margin: 0;
     padding: 0;
-    background-color: aquamarine;
+    background-color: rgb(127, 255, 212);
+}
+
+html,
+body {
+    overflow: hidden;
+}
+
+.webgl {
+    position: fixed;
+    top: 1;
+    left: 0;
+    outline: none;
 }
