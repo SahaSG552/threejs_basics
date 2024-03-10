@@ -1,9 +1,43 @@
-import '/Работа/РАБОЧИЕ ПРОЕКТЫ/JavaScript/Projects/threejs_basics/style.css'
+import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 
 
+// Textures
+const loadingManager = new THREE.LoadingManager()
+loadingManager.onLoad = () => { console.log('LOAD') }
+loadingManager.onStart = () => { console.log('START') }
+loadingManager.onProgress = () => { console.log('PROGRESS') }
+
+const textureLoader = new THREE.TextureLoader(loadingManager)
+const colorTexture = textureLoader.load(
+    '/textures/Door_Wood_001_SD/Door_Wood_001_basecolor.jpg',
+)
+const alphaTexture = textureLoader.load(
+    '/textures/Door_Wood_001_SD/Door_Wood_001_opacity.jpg',
+)
+const heightTexture = textureLoader.load(
+    '/textures/Door_Wood_001_SD/Door_Wood_001_height.png',
+)
+const normalTexture = textureLoader.load(
+    '/textures/Door_Wood_001_SD/Door_Wood_001_normal.jpg',
+)
+const ambientOcclusionTexture = textureLoader.load(
+    '/textures/Door_Wood_001_SD/Door_Wood_001_ambientOcclusion.jpg',
+)
+const metalnessTexture = textureLoader.load(
+    '/textures/Door_Wood_001_SD/Door_Wood_001_metallic.jpg',
+)
+const roughnessTexture = textureLoader.load(
+    '/textures/Door_Wood_001_SD/Door_Wood_001_roughness.jpg',
+)
+//colorTexture.repeat.x = 2
+//colorTexture.repeat.y = 3
+//colorTexture.wrapS = THREE.RepeatWrapping
+//colorTexture.wrapT = THREE.RepeatWrapping
+colorTexture.offset.x = 100
+colorTexture.offset.y = 50
 
 // Variables
 const cabParams = {
@@ -34,10 +68,14 @@ const scene = new THREE.Scene()
 
 // Geometry
 const cabGeo = new THREE.BoxGeometry(cabParams.width, cabParams.height, cabParams.depth)
+
+console.log(cabGeo.attributes.uv)
+
 const edgeGeo = new THREE.EdgesGeometry(cabGeo)
 const cabColor = { color: 0x7fffd4 }
 const edgeMat = new THREE.LineBasicMaterial({ color: cabColor.color, linewidth: 3 })
-const cabMat = new THREE.MeshBasicMaterial({ color: cabColor.color, transparent: true, opacity: 0.3 })
+// const cabMat = new THREE.MeshBasicMaterial({ color: cabColor.color, transparent: true, opacity: 0.3 })
+const cabMat = new THREE.MeshBasicMaterial({ map: colorTexture })
 const cabBox = new THREE.Mesh(cabGeo, cabMat)
 const cabEdges = new THREE.LineSegments(edgeGeo, edgeMat)
 const cabGroup = new THREE.Group()
@@ -53,6 +91,7 @@ window.addEventListener('dblclick', () => {
     const edgeVisibility = cabGroup.children[1].visible
     cabGroup.children[1].visible = !edgeVisibility
 })
+
 
 // Screen
 const screen = {
@@ -116,7 +155,6 @@ window.addEventListener('resize', () => {
 })
 
 // Camera control
-
 const loop = () => {
     //console.log(camera.position.distanceTo(mesh.position))
     controls.update()
@@ -140,8 +178,11 @@ const loop = () => {
 
 loop()
 
+
 // GUI
 const gui = new dat.GUI()
+
+gui.closed = true
 
 gui
     .add(cabGroup.position, 'y')
@@ -159,3 +200,4 @@ gui
         cabMat.color.set(cabColor.color)
         edgeMat.color.set(cabColor.color)
     })
+
