@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 
 
+
 // Textures
 const loadingManager = new THREE.LoadingManager()
 loadingManager.onLoad = () => { console.log('LOAD') }
@@ -32,12 +33,6 @@ const metalnessTexture = textureLoader.load(
 const roughnessTexture = textureLoader.load(
     '/textures/Door_Wood_001_SD/Door_Wood_001_roughness.jpg',
 )
-//colorTexture.repeat.x = 2
-//colorTexture.repeat.y = 3
-//colorTexture.wrapS = THREE.RepeatWrapping
-//colorTexture.wrapT = THREE.RepeatWrapping
-colorTexture.offset.x = 100
-colorTexture.offset.y = 50
 
 // Variables
 const cabParams = {
@@ -65,25 +60,24 @@ window.addEventListener('mousemove', (event) => {
 
 // Scene
 const scene = new THREE.Scene()
+scene.background = new THREE.Color(0x052529) //#052529
 
 // Geometry
 const cabGeo = new THREE.BoxGeometry(cabParams.width, cabParams.height, cabParams.depth)
-
-console.log(cabGeo.attributes.uv)
-
 const edgeGeo = new THREE.EdgesGeometry(cabGeo)
-const cabColor = { color: 0x7fffd4 }
+const cabColor = { color: 0x7fffd4 } //#7fffd4
 const edgeMat = new THREE.LineBasicMaterial({ color: cabColor.color, linewidth: 3 })
-// const cabMat = new THREE.MeshBasicMaterial({ color: cabColor.color, transparent: true, opacity: 0.3 })
-const cabMat = new THREE.MeshBasicMaterial({ map: colorTexture })
+const cabMat = new THREE.MeshBasicMaterial({ color: cabColor.color, transparent: true, opacity: 0.3 })
+// const cabMat = new THREE.MeshBasicMaterial({ map: colorTexture })
 const cabBox = new THREE.Mesh(cabGeo, cabMat)
 const cabEdges = new THREE.LineSegments(edgeGeo, edgeMat)
 const cabGroup = new THREE.Group()
 cabGroup.add(cabBox, cabEdges)
-//cabGroup.add(cabEdges)
-cabGroup.position.set(cabParams.width / 2, cabParams.height / 2 + cabParams.floorOffset, cabParams.depth / 2 + cabParams.wallOffset)
-//mesh.rotation.y = degToRad(45)
-//mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), 360 / 10 * Math.PI)
+cabGroup.position.set(
+    cabParams.width / 2,
+    cabParams.height / 2 + cabParams.floorOffset,
+    cabParams.depth / 2 + cabParams.wallOffset
+)
 scene.add(cabGroup)
 
 // Double Click Edge Visibility event
